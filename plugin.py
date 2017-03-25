@@ -31,9 +31,7 @@ class BasePlugin(object):
           pass
       @classmethod
       def on_event(self,event):
-          if event=="APP_QUIT":
-              config.log.log("(PLUGINS/%s):Recieved APP_QUIT event"%self.name)
-              sys.exit(0)
+          config.log.log("(PLUGINS/%s):"%self.name+" recived event:"+event)
       @classmethod
       def on_cmd(self,cmd,args):
           pass
