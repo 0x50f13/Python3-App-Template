@@ -14,7 +14,6 @@ class App:
           try: #here we'll initiallize app
             self.main_function=main_function
             self.plugins=dict()
-            self.components=dict()#list of app components
             self.name=name
             self.threads=[]
             config.argv=sys.argv
@@ -71,10 +70,10 @@ class App:
           config.log.log("Starting app")
           for plugin in self.plugins:
               plg=self.plugins[plugin]
-              thrd=threading.Thread(target=plg.run,args=(self,[1]))
+              thrd=threading.Thread(target=config.handler.run_function,args=(plg.run,self,sys.argv,))
               self.threads.append(thrd)
               thrd.setDaemon(1)
-          thrd=threading.Thread(target=self.main_function,args=(self,))#adding main fuunctiion to threading
+          thrd=threading.Thread(target=config.handler.run_function,args=(self.main_function,self,))#adding main functiion to threading
           self.threads.append(thrd)
           thrd.setDaemon(1)
           for i in range(len(self.threads)):

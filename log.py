@@ -16,15 +16,18 @@ class logger:
           stack=inspect.stack() #getting stack
           self.logfile.write("<STACK>:")
           for call in stack: #processing each call
-              self.logfile.write(str(call[1])+"\n "+str(call[3])+":"+str(call[2]))
-      def messagebox(self,title,msg):
+              self.logfile.write(str(call))
+      def messagebox(self,title,msg,trace_lvl=3,auto_lvl=True):
           """write to log text styled messagebox
              title--title for messagebox
-             msg--message inside the messagebox"""
+             msg--message inside the messagebox
+             trace_lvl--how many levels we need get into stack"""
           self.log("")
           stack=inspect.stack()
-          self.logfile.write("+-------|%s"%title+"\n") #writing messagebox header
+          if auto_lvl:
+              trace_lvl=len(stack)-1
+          self.log("+-------|%s"%title) #writing messagebox header
           for line in msg.split("\n"):
-               self.logfile.write("|"+line+"\n")
-          self.logfile.write("|at "+str(stack[1][1])+":"+str(stack[1][2])+"("+str(stack[1][3])+")\n")
-          self.logfile.write("+-------"+"-"*len(title)+"\n")
+               self.log("|"+line)
+          self.log("|at "+str(stack[trace_lvl][1])+":"+str(stack[trace_lvl][2])+"("+str(stack[trace_lvl][3])+")")
+          self.log("+-------"+"-"*len(title))

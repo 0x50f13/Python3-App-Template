@@ -15,12 +15,13 @@ class exception_handler:
       def exception(self,e):#exception function
          #self.on_exception(self,e,datetime.datetime.now())
          if(config.EXCEPTION_NOTIFY):
-            self.app.event("$EXCEPTION")#"$" symbol before event meas that this internal app event
-            config.logger.messagebox("Warning","An exception has occured!\n"+str(e))#showing text styled messagebox into log
+            #self.app.event("$EXCEPTION")#"$" symbol before event meas that this internal app event
+            config.log.messagebox("Warning","An exception has occured!\n"+str(e))#showing text styled messagebox into log
             if(config.debug or self.show_trace):#if we need to show trace
-               config.logger.write_stack()#writng trace
+               config.log.write_stack()#writng trace
       def run_function(self,f,*args):#runs function with exception handling
           try:
               f(*args)#running given function with args
           except Exception as e:#if exception occurs
+              print("EXCEPTION:"+str(e))
               self.exception(e)#processing it
