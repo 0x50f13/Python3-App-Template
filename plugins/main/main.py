@@ -14,7 +14,7 @@ class plugin(BasePlugin):#our plugin
         #config.log.log("OK"+str(argv)) neded for debug
         app.event("SOME_OTHER_EVENT")#broadcasting event
         j=0#counnter of cycles
-        while config.run:
+        while self.parent.running:
             time.sleep(1)#illusion of doing smth
             j=j+1#incresing counter
             config.log.log("This is plugin #0,j="+str(j))#logging some debug info

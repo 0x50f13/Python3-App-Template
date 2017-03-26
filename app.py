@@ -15,8 +15,9 @@ class App:
             self.main_function=main_function
             self.plugins=dict()
             self.name=name
-            self.components=dict()
+            self.components=dict()#IMPORTANT:This is not componets that are loaded,but components of app(NOT plugins!)
             self.threads=[]
+            self.running=True
             config.argv=sys.argv
             config.log=logger(logfilename)
             config.handler=exception_handler(self,on_exception,config.debug) #initiallized logger and exception handler
@@ -61,7 +62,7 @@ class App:
       def event(self,event):
           if event=="$APP_QUIT":#FIXME:Issue #1:Plugins work after $APP_QUIT event
               config.log.log("Recieved quit signal.")
-              config.run=False
+              self.running=False
           for component in self.components:
               self.components[component].on_event(event)#FIXED:Issue #3:App components do not recieve events
           for plugin in self.plugins:

@@ -25,7 +25,7 @@ class exception_handler:
           try:
               f(*args)#running given function with args
           except Exception as e:#if exception occurs
-              #rint("EXCEPTION:"+str(e))
+              #print("EXCEPTION:"+str(e))
               exc_type, exc_obj, exc_tb = sys.exc_info()
               fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
               if self.on_exception != None:
