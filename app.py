@@ -1,7 +1,7 @@
 import config
 from log import logger
 from handle import exception_handler
-from component import load_component
+from component import load_component,components
 import sys
 import os
 from plugin import BasePlugin
@@ -15,10 +15,11 @@ class App:
             self.main_function=main_function
             self.plugins=dict()
             self.name=name
+            self.components=dict()
             self.threads=[]
             config.argv=sys.argv
             config.log=logger(logfilename)
-            config.handler=exception_handler(on_exception,config.debug) #initiallized logger and exception handler
+            config.handler=exception_handler(self,on_exception,config.debug) #initiallized logger and exception handler
             #here we will load app components
             config.log.log("Loading components:")
             _components=os.listdir(config.components_folder)
@@ -54,13 +55,15 @@ class App:
                 traceback.print_exc(file=sys.stdout)
             print("This application has crashed.")
             sys.exit(-1)
-      def hw(self,i):
-          print(str(i**2))
-          self.plugins[0].run()
+      def add_component(self,component,name):
+          _component=components[component](self,name)
+          self.components.update({name:_component})
       def event(self,event):
-          if event=="$APP_QUIT":
+          if event=="$APP_QUIT":#FIXME:Issue #1:Plugins work after $APP_QUIT event
               config.log.log("Recieved quit signal.")
               config.run=False
+          for component in self.components:
+              self.components[component].on_event(event)#FIXED:Issue #3:App components do not recieve events
           for plugin in self.plugins:
               config.log.log("Sending event to "+plugin)
               self.plugins[plugin].on_event(event)
@@ -68,6 +71,7 @@ class App:
                   self.plugins[plugin].components[component].on_event(event)
       def run(self):#DONE:Add running main function
           config.log.log("Starting app")
+          self.add_component("HelloComponent","Hello1")
           for plugin in self.plugins:
               plg=self.plugins[plugin]
               thrd=threading.Thread(target=config.handler.run_function,args=(plg.run,self,sys.argv,))

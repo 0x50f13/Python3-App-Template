@@ -3,6 +3,9 @@ from component import BaseCompoment
 
 #Example of compnent
 name="HelloComponent"
+ALLOW_SUBCOMPONETNS=False #This means if this compnent couldn't have child components
+class SubComponentsNotAllowed(Exception):#this exception will be raised if you'll try to add child component of component where 
+    pass
 class MainComponent(BaseCompoment):
     def __init__(self,parent,name,*args,**kwargs):
         self.args=args

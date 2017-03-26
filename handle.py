@@ -1,6 +1,6 @@
 import datetime
 import config
-
+import weakref
 class exception_handler:
       def __init__(self,app,on_exception=None,show_trace=False):
         """Exception handler process exception if it occurs.
@@ -25,3 +25,6 @@ class exception_handler:
           except Exception as e:#if exception occurs
               print("EXCEPTION:"+str(e))
               self.exception(e)#processing it
+              if config.CRASH_ON_EXCEPTIONS:
+                  config.log.log("Application crashing!!!\nCRASH_ON_EXCEPTIONS=True\nSending $APP_QUIT")
+                  self.app.event("$APP_QUIT")

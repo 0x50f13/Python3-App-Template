@@ -6,3 +6,4 @@ plugins_folder="plugins"#folder where plugins stored
 components_folder="components"
 argv=None#argv
 run=True
+CRASH_ON_EXCEPTIONS=True
