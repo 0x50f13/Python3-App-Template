@@ -5,7 +5,6 @@ import config
 
 #Main file of our app
 def main(app):#main function
-    r=1/0
     while config.run:#!!!IMPORTANT!!!:life cycle should continue only while app running,otherwise app will run forever!
         time.sleep(3)#just doing smth
         print("This is main function")
