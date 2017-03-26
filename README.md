@@ -5,7 +5,9 @@ App template with plugins for python 3. <b>Beta-version</b>
 <p>
 <b>License:</b>GNU/GPL v3.0
 </p>
+
 # Description(tiny):
+
 <p>
 This app is fully extendable and allows to use components and plugins.<br>
 *<b>Component is that part of app that could be used as well by app and plugins(e.g. button)</b><br>
