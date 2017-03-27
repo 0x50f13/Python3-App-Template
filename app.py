@@ -8,9 +8,10 @@ from plugin import BasePlugin
 import importlib.util
 import threading
 import traceback
+from event import Event
 
 class App:
-      def __init__(self,logfilename,main_function,name="An Amazing app",init_function=None,on_exception=None):
+      def __init__(self,logfilename,main_function,version="1.0.0.0beta",name="An Amazing app",init_function=None,on_exception=None):
           try: #here we'll initiallize app
             self.main_function=main_function
             self.plugins=dict()
@@ -34,13 +35,13 @@ class App:
             sys.path.insert(0, config.plugins_folder)
             for Plugin in _plugins:
                 try:
-                   if(Plugin=="__pycache__" or Plugin=="__init__.py"):
+                   if(Plugin=="__pycache__" or Plugin=="__init__.py" or not os.path.isfile(config.plugins_folder+"/"+Plugin+"/main.py")):
                        continue
                    mod=importlib.util.spec_from_file_location(Plugin, config.plugins_folder+"/"+Plugin+"/main.py")#importing plugin
                    plg=importlib.util.module_from_spec(mod)
                    mod.loader.exec_module(plg)
-                   _plg=plg.plugin(self)#calling on load function
-                   _plg.on_load(self)
+                   _plg=plg.plugin(self)
+                   _plg.on_load(self)#calling on load function
                    self.plugins.update({_plg.name:_plg})
                    config.log.log(plg.plugin.name+" loaded")#logging that new plguin succesfully loaded
                 except Exception as e:
@@ -60,9 +61,13 @@ class App:
           _component=components[component](self,name)
           self.components.update({name:_component})
       def event(self,event):
-          if event=="$APP_QUIT":#FIXME:Issue #1:Plugins work after $APP_QUIT event
+          if config.SHOW_EVENTS_IN_LOG:
+             config.log.log("EVENT:\n"+"Name:%s\nParent:"%event.name+event.parent.name)
+
+          if event.name=="$APP_QUIT":#FIXME:Issue #1:Plugins work after $APP_QUIT event
               config.log.log("Recieved quit signal.")
               self.running=False
+
           for component in self.components:
               self.components[component].on_event(event)#FIXED:Issue #3:App components do not recieve events
               for _component in self.components[component].subcomponents:

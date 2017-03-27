@@ -2,8 +2,10 @@ import datetime
 import config
 import sys,os
 import inspect
+from event import Event
 
 class exception_handler:
+      name="Exception handler"
       def __init__(self,app,on_exception=None,show_trace=False):
         """Exception handler process exception if it occurs.
            on_exception(handler,exception,time)--function that process exceptions.
@@ -28,9 +30,11 @@ class exception_handler:
               #print("EXCEPTION:"+str(e))
               exc_type, exc_obj, exc_tb = sys.exc_info()
               fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-              if self.on_exception != None: 
+              if self.on_exception != None:
                   self.on_exception(e)
               self.exception(e,inspect.getfile(f)+":"+str(inspect.getsourcelines(f)[-1]))#processing it
               if config.CRASH_ON_EXCEPTIONS:
                   config.log.log("Application crashing!!!\nCRASH_ON_EXCEPTIONS=True\nSending $APP_QUIT")
-                  self.app.event("$APP_QUIT")
+                  data=dict()
+                  data.update({"file":fname,"type":exc_type,"exc_obj":exc_obj,"traceback":exc_tb})
+                  self.app.event(Event("$APP_QUIT",self,data))
