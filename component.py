@@ -5,6 +5,8 @@ class BaseCompoment(object):
     author="Bob Smith"
     name="Abstarct1"
     description="Amazing component"
+    subcomponents=dict()
+    ALLOW_SUBCOMPONETNS=False
     def __init__(self,parent,name,*args,**kwargs):
         self.args=args
         self.kwargs=kwargs

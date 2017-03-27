@@ -65,6 +65,8 @@ class App:
               self.running=False
           for component in self.components:
               self.components[component].on_event(event)#FIXED:Issue #3:App components do not recieve events
+              for _component in self.components[component].subcomponents:
+                  self.components[component].subcomponents[_component].on_event(event)
           for plugin in self.plugins:
               config.log.log("Sending event to "+plugin)
               self.plugins[plugin].on_event(event)
@@ -72,15 +74,16 @@ class App:
                   self.plugins[plugin].components[component].on_event(event)
       def run(self):#DONE:Add running main function
           config.log.log("Starting app")
-          self.add_component("HelloComponent","Hello1")
+          #self.add_component("HelloComponent","Hello1")
           for plugin in self.plugins:
               plg=self.plugins[plugin]
               thrd=threading.Thread(target=config.handler.run_function,args=(plg.run,self,sys.argv,))
               self.threads.append(thrd)
               thrd.setDaemon(1)
-          thrd=threading.Thread(target=config.handler.run_function,args=(self.main_function,self,))#adding main functiion to threading
-          self.threads.append(thrd)
-          thrd.setDaemon(1)
+          if self.main_function!=None:
+              thrd=threading.Thread(target=config.handler.run_function,args=(self.main_function,self,))#adding main functiion to threading
+              self.threads.append(thrd)
+              thrd.setDaemon(1)
           for i in range(len(self.threads)):
               self.threads[i].start()
           for i in range(len(self.threads)):

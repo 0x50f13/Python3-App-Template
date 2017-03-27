@@ -22,9 +22,10 @@ class logger:
              title--title for messagebox
              msg--message inside the messagebox
              file where -from where it was called"""
-          self.log("")
-          self.log("+-------|%s"%title) #writing messagebox header
+          box="\n"#Fixing Issue #5
+          box=box+"+-------|%s"%title #writing messagebox header
           for line in msg.split("\n"):
-               self.log("|"+line)
-          self.log("|at "+_file)
-          self.log("+-------"+"-"*len(title))
+               box=box+"|"+line+"\n"
+          box=box+"|at "+_file+"\n"
+          box=box+"+-------"+"-"*len(title)
+          self.log(box)

@@ -28,7 +28,7 @@ class exception_handler:
               #print("EXCEPTION:"+str(e))
               exc_type, exc_obj, exc_tb = sys.exc_info()
               fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-              if self.on_exception != None:
+              if self.on_exception != None: 
                   self.on_exception(e)
               self.exception(e,inspect.getfile(f)+":"+str(inspect.getsourcelines(f)[-1]))#processing it
               if config.CRASH_ON_EXCEPTIONS:
