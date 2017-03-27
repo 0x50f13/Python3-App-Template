@@ -8,12 +8,18 @@ class plugin(BasePlugin):#our own plugin
     version="1.1.0alpha"
     author="(Unknown)"
     description="Example plugin"
-
+    def on_event(self,event):
+        if event=="SELF_TEST":
+            #testig smth
+            if self.components["exmpl1"].x==12:
+                config.log.log("PLUGINS/"+self.name+"...OK")
+            else:
+                config.log.log("PLUGINS/"+self.name+"...FAIL")
     def on_load(self,app):
         self.add_component("ExampleComponent","exmpl1")#creating instance of component inside of our plugin
         self.components["exmpl1"].x=12#setting x of our component
         self.components["exmpl1"].add_component("ExampleSubComponent","sub1")#subcomponent
     def run(self,app,argv):
-        while app.running:#whille our app runnong.
+        while app.running:#while our app runnong.
             time.sleep(5)
-            #app.event(Event("5_SECONDS_PASSED",self,{"time":10}))#crating event every 5 seconds
+            print("\napp.running="+str(app.running))

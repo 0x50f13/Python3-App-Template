@@ -81,6 +81,7 @@ class App:
           config.log.log("Starting app")
           #self.add_component("HelloComponent","Hello1")
           for plugin in self.plugins:
+              config.log.log("running plugin:"+plugin)
               plg=self.plugins[plugin]
               thrd=threading.Thread(target=config.handler.run_function,args=(plg.run,self,sys.argv,))
               self.threads.append(thrd)

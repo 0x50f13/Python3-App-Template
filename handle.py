@@ -33,8 +33,9 @@ class exception_handler:
               if self.on_exception != None:
                   self.on_exception(e)
               self.exception(e,inspect.getfile(f)+":"+str(inspect.getsourcelines(f)[-1]))#processing it
+              data=dict()
+              data.update({"file":fname,"type":exc_type,"exc_obj":exc_obj,"traceback":exc_tb})
+              self.app.event(Event("$EXCEPTION",self,data))
               if config.CRASH_ON_EXCEPTIONS:
                   config.log.log("Application crashing!!!\nCRASH_ON_EXCEPTIONS=True\nSending $APP_QUIT")
-                  data=dict()
-                  data.update({"file":fname,"type":exc_type,"exc_obj":exc_obj,"traceback":exc_tb})
-                  self.app.event(Event("$APP_QUIT",self,data))
+                  self.app.event(Event("$APP_QUIT",self,{"code":-1}))

@@ -6,4 +6,4 @@ plugins_folder="plugins"#folder where plugins stored
 components_folder="components"
 argv=None#argv
 CRASH_ON_EXCEPTIONS=True
-SHOW_EVENTS_IN_LOG=True#if this True all events will be logged
+SHOW_EVENTS_IN_LOG=False#if this True all events will be logged

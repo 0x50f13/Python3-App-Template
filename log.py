@@ -23,7 +23,7 @@ class logger:
              msg--message inside the messagebox
              file where -from where it was called"""
           box="\n"#Fixing Issue #5
-          box=box+"+-------|%s"%title #writing messagebox header
+          box=box+"+-------|%s"%title+"\n" #writing messagebox header
           for line in msg.split("\n"):
                box=box+"|"+line+"\n"
           box=box+"|at "+_file+"\n"
