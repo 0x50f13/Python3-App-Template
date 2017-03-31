@@ -22,8 +22,10 @@ To initiallize it you need:<br>
 <b>main_function</b>--function that will be runned with app,called with params:parent(app class)<br>
 Non-required params:<br>
 <b>init_function</b>--function called after all app initiallized(params same with main_function)<br>
-<b>on_exception</b>--function called if exception occurs(params e-- Exception class)
-Example:
+<b>on_exception</b>--function called if exception occurs(params e-- Exception class)<br>
+
+Example:<br>
+
 ```python
 from App import App
 import config
