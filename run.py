@@ -1,15 +1,18 @@
 from app import App as app
-import time
+import time,datetime
 import config
 from event import Event
-
+from job import job
 #Main file of our app
-def custom_job(arg):
-    while True:
-        print(str(arg))
-        time.sleep(10)
+def custom_job(app,arg):
+    i=0
+    while app.running:
+          config.log.log(str(i))
+          i=i+1
+          if(i>5):
+              break
+          time.sleep(5)
 def main(app):#main function
-    #app.run_job(custom_job,(10,))
     while app.running:#!!!IMPORTANT!!!:life cycle should continue only while app running,otherwise app will run forever!
           s=input(">")
           if s=="help":
@@ -20,5 +23,5 @@ def main(app):#main function
               app.event(Event("UI_COMMAND_SENT",app,{"cmd":s}))
 
 if __name__=="__main__":#if we're running not as module
-   App=app("app.log",main)#creating app
+   App=app("app.log",main,[job(custom_job,(10,))])#creating app
    App.run()#and running it

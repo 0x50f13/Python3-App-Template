@@ -11,13 +11,24 @@ import traceback
 from event import Event
 
 class App:
-      def __init__(self,logfilename,main_function,version="1.0.0.0beta",name="An Amazing app",init_function=None,on_exception=None):
+      def __init__(self,logfilename,main_function,custom_functions=[],version="1.0.0.0beta",name="An Amazing multithreading app",init_function=None,on_exception=None):
+          '''__init__ creates new app instance
+          REQUIRED
+            logfilename--name of log file,string
+            main_function--main function of app,function instance or None.Will be given app instance as argument
+          OPTIONAL:
+            custom_functions--array of job instances,each custom function will be given App instance as well.
+            version--version of your app
+            name--name of your app
+            init_function--function instance,will be run in end of __init__
+            on_exception--exception  processing function'''
           try: #here we'll initiallize app
             self.main_function=main_function
             self.plugins=dict()
             self.name=name
             self.components=dict()#IMPORTANT:This is not componets that are loaded,but components of app(NOT plugins!)
             self.threads=[]
+            self.custom_functions=custom_functions
             self.running=True
             config.argv=sys.argv
             config.log=logger(logfilename)
@@ -82,17 +93,6 @@ class App:
                   self.plugins[plugin].components[component].on_event(event)
                   for _component in self.plugins[plugin].components[component].subcomponents:
                       self.plugins[plugin].components[component].subcomponents[_component].on_event(event)
-      def run_job(self,job_function,args):
-          '''This will run your function
-             job_function - main function of your job.
-             args - tuple of ags for your function'''
-          config.log.log("New job added"+str(job_function))
-          thrd=threading.Thread(target=config.handler.run_function,args=(job_function,None,)+args)
-          self.threads.append(thrd)
-          thrd.setDaemon(1)
-          self.threads[-1].start()
-          self.threads[-1].join()
-          config.log.log("Job started")
       def run(self):#DONE:Add running main function
           config.log.log("Starting app")
           #self.add_component("HelloComponent","Hello1")
@@ -104,6 +104,10 @@ class App:
               thrd.setDaemon(1)
           if self.main_function!=None:
               thrd=threading.Thread(target=config.handler.run_function,args=(self.main_function,self,self,))#adding main functiion to threading
+              self.threads.append(thrd)
+              thrd.setDaemon(1)
+          for job in self.custom_functions:
+              thrd=threading.Thread(target=config.handler.run_function,args=(job.function,None,self,)+job.args)#adding main functiion to threading
               self.threads.append(thrd)
               thrd.setDaemon(1)
           for i in range(len(self.threads)):
