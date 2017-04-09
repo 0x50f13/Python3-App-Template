@@ -22,4 +22,4 @@ class plugin(BasePlugin):#our own plugin
     def run(self,app,argv):
         while app.running:#while our app runnong.
             time.sleep(5)
-            print("\napp.running="+str(app.running))
+            #print("\napp.running="+str(app.running))

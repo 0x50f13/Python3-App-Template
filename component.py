@@ -14,11 +14,12 @@ class BaseCompoment(object):
     description="Amazing component"
     subcomponents=dict()
     ALLOW_SUBCOMPONETNS=False
-    def __init__(self,parent,name,*args,**kwargs):
+    def __init__(self,parent,name,app,*args,**kwargs):#FIXED:Issue #7
         self.args=args
         self.kwargs=kwargs
         self.parent=parent
         self.name=name
+        self.app=app
     def on_event(self,event):
         pass
     def on_create(self):
@@ -29,7 +30,7 @@ class BaseCompoment(object):
            name--new unique name of component
            Will raise exception if subcomponents are not allowed!!!"""
         if self.ALLOW_SUBCOMPONETNS:
-          _component=components[component](self,name)
+          _component=components[component](self,name,self.app)
           self.subcomponents.update({name:_component})
           self.subcomponents[name].on_create()
         else:

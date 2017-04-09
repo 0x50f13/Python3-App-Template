@@ -16,7 +16,7 @@ class BasePlugin(object):
           """adds component to plugin
              __component--component name from components
              name--new unique name of component"""
-          _component=components[__component](self,name,*args,**kwargs)
+          _component=components[__component](self,name,self.parent,*args,**kwargs)
           self.components.update({name:_component})
           self.components[name].on_create()
       @staticmethod

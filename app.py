@@ -48,7 +48,7 @@ class App:
                    config.log.log("Couldn't load plugin:"+Plugin+"\nException:"+str(e))#logging about exception while loading plugin
                    if(config.debug):
                        traceback.print_exc(file=sys.stdout)
-                   config.log.messagebox("Warning","Could not load plugin:"+Plugin)
+                   config.log.messagebox("Warning","Could not load plugin:"+Plugin,"app.py:51:20")
             if init_function!=None:#if we're given init function
                 init_function(self)#run it
           except Exception as e:
@@ -57,9 +57,12 @@ class App:
                 traceback.print_exc(file=sys.stdout)
             print("This application has crashed.")
             sys.exit(-1)
+      def __str__(self):
+          return self.name
       def add_component(self,component,name):
-          _component=components[component](self,name)
+          _component=components[component](self,name,self)
           self.components.update({name:_component})
+
       def event(self,event):
           if config.SHOW_EVENTS_IN_LOG:
              config.log.log("EVENT:\n"+"Name:%s\nParent:"%event.name+event.parent.name)
@@ -71,23 +74,36 @@ class App:
           for component in self.components:
               self.components[component].on_event(event)#FIXED:Issue #3:App components do not recieve events
               for _component in self.components[component].subcomponents:
-                  self.components[component].subcomponents[_component].on_event(event)
+                  self.components[component].subcomponents[_component].oin_event(event)
           for plugin in self.plugins:
               config.log.log("Sending event to "+plugin)
               self.plugins[plugin].on_event(event)
               for component in self.plugins[plugin].components:
                   self.plugins[plugin].components[component].on_event(event)
+                  for _component in self.plugins[plugin].components[component].subcomponents:
+                      self.plugins[plugin].components[component].subcomponents[_component].on_event(event)
+      def run_job(self,job_function,args):
+          '''This will run your function
+             job_function - main function of your job.
+             args - tuple of ags for your function'''
+          config.log.log("New job added"+str(job_function))
+          thrd=threading.Thread(target=config.handler.run_function,args=(job_function,None,)+args)
+          self.threads.append(thrd)
+          thrd.setDaemon(1)
+          self.threads[-1].start()
+          self.threads[-1].join()
+          config.log.log("Job started")
       def run(self):#DONE:Add running main function
           config.log.log("Starting app")
           #self.add_component("HelloComponent","Hello1")
           for plugin in self.plugins:
               config.log.log("running plugin:"+plugin)
               plg=self.plugins[plugin]
-              thrd=threading.Thread(target=config.handler.run_function,args=(plg.run,self,sys.argv,))
+              thrd=threading.Thread(target=config.handler.run_function,args=(plg.run,plg,self,sys.argv,))
               self.threads.append(thrd)
               thrd.setDaemon(1)
           if self.main_function!=None:
-              thrd=threading.Thread(target=config.handler.run_function,args=(self.main_function,self,))#adding main functiion to threading
+              thrd=threading.Thread(target=config.handler.run_function,args=(self.main_function,self,self,))#adding main functiion to threading
               self.threads.append(thrd)
               thrd.setDaemon(1)
           for i in range(len(self.threads)):

@@ -4,7 +4,12 @@ import config
 from event import Event
 
 #Main file of our app
+def custom_job(arg):
+    while True:
+        print(str(arg))
+        time.sleep(10)
 def main(app):#main function
+    #app.run_job(custom_job,(10,))
     while app.running:#!!!IMPORTANT!!!:life cycle should continue only while app running,otherwise app will run forever!
           s=input(">")
           if s=="help":
