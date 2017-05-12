@@ -68,12 +68,14 @@ class App:
                 traceback.print_exc(file=sys.stdout)
             print("This application has crashed.")
             sys.exit(-1)
+
       def __str__(self):
           return self.name
+
       def add_component(self,component,name):
           _component=components[component](self,name,self)
           self.components.update({name:_component})
-
+          self.components.on_create()#FIXED:Issue #11
       def event(self,event):
           if config.SHOW_EVENTS_IN_LOG:
              config.log.log("EVENT:\n"+"Name:%s\nParent:"%event.name+event.parent.name)
@@ -84,15 +86,16 @@ class App:
 
           for component in self.components:
               self.components[component].on_event(event)#FIXED:Issue #3:App components do not recieve events
-              for _component in self.components[component].subcomponents:
-                  self.components[component].subcomponents[_component].oin_event(event)
+              self.components[component].event_tosubs(event)
+
           for plugin in self.plugins:
               config.log.log("Sending event to "+plugin)
               self.plugins[plugin].on_event(event)
               for component in self.plugins[plugin].components:
+                  config.log.log("Sending event to %s"%component)
                   self.plugins[plugin].components[component].on_event(event)
-                  for _component in self.plugins[plugin].components[component].subcomponents:
-                      self.plugins[plugin].components[component].subcomponents[_component].on_event(event)
+                  self.plugins[plugin].components[component].event_tosubs(event)
+
       def run(self):#DONE:Add running main function
           config.log.log("Starting app")
           #self.add_component("HelloComponent","Hello1")

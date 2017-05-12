@@ -12,7 +12,7 @@ class plugin(BasePlugin):#our own plugin
     def on_load(self,app):
         self.add_component("ExampleComponent","exmpl1")#creating instance of component inside of our plugin
         self.components["exmpl1"].x=12#setting x of our component
-        self.components["exmpl1"].add_component("ExampleSubComponent","exmpl2")
+        self.components["exmpl1"].add_component("ExampleSubComponent","Eaxmpl13")
 
     def run(self,app,argv):
         while app.running:#
