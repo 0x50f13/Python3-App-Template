@@ -39,13 +39,13 @@ class BaseCompoment(object):
     def on_create(self):
         pass
 
-    def add_component(self,component,name):
+    def add_component(self,component,name,*args,**kwargs):
         """adds compnent to plugin
            component--component name from components
            name--new unique name of component
            Will raise exception if subcomponents are not allowed!!!"""
         if self.ALLOW_SUBCOMPONETNS:
-          _component=components[component](self,name,self.app)
+          _component=components[component](self,name,self.app,*args,**kwargs)
           self.subcomponents.update({name:_component})
           self.subcomponents[name].on_create()
         else:
