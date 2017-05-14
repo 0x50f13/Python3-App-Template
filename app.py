@@ -110,7 +110,7 @@ class App:
         ):
         _component = components[component](self, name, self, *args, **kwargs)
         self.components.update({name: _component})
-        self.components.on_create()  # FIXED:Issue #11
+        self.components[name].on_create()  # FIXED:Issue #11
 
     def event(self, event):
         if config.SHOW_EVENTS_IN_LOG:
