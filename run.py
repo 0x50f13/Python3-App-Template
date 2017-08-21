@@ -3,6 +3,8 @@ import time,datetime
 import config
 from event import Event
 from job import job
+
+MODULENAME="MAIN"
 #Main file of our app
 def custom_job(app,arg):
     i=0

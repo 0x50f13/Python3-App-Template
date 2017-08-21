@@ -12,19 +12,20 @@ import threading
 import traceback
 from event import Event
 
+MODULE_NAME = "CTL"
+
 
 class App:
-
     def __init__(
-        self,
-        logfilename,
-        main_function,
-        custom_functions=[],
-        version='1.0.0.0beta',
-        name='An Amazing multithreading app',
-        init_function=None,
-        on_exception=None,
-        ):
+            self,
+            logfilename,
+            main_function,
+            custom_functions=[],
+            version='1.0.0.0beta',
+            name='An Amazing multithreading app',
+            init_function=None,
+            on_exception=None,
+    ):
         '''__init__ creates new app instance
           REQUIRED
             logfilename--name of log file,string
@@ -47,7 +48,7 @@ class App:
             config.argv = sys.argv
             config.log = logger(logfilename)
             config.handler = exception_handler(self, on_exception,
-                    config.debug)  # initiallized logger and exception handler
+                                               config.debug)  # initiallized logger and exception handler
 
             # here we will load app components
 
@@ -56,7 +57,7 @@ class App:
             sys.path.insert(0, config.components_folder)
             for component in _components:
                 if component == '__init__.py' or component \
-                    == '__pycache__':
+                        == '__pycache__':
                     continue
                 load_component(config.components_folder + '/'
                                + component + '/main.py', component)
@@ -66,14 +67,14 @@ class App:
             for Plugin in _plugins:
                 try:
                     if Plugin == '__pycache__' or Plugin \
-                        == '__init__.py' \
-                        or not os.path.isfile(config.plugins_folder
-                            + '/' + Plugin + '/main.py'):
+                            == '__init__.py' \
+                            or not os.path.isfile(config.plugins_folder
+                                                          + '/' + Plugin + '/main.py'):
                         continue
                     mod = \
                         importlib.util.spec_from_file_location(Plugin,
-                            config.plugins_folder + '/' + Plugin
-                            + '/main.py')  # importing plugin
+                                                               config.plugins_folder + '/' + Plugin
+                                                               + '/main.py')  # importing plugin
                     plg = importlib.util.module_from_spec(mod)
                     mod.loader.exec_module(plg)
                     _plg = plg.plugin(self)
@@ -86,13 +87,13 @@ class App:
                     if config.debug:
                         traceback.print_exc(file=sys.stdout)
                     config.log.messagebox('Warning',
-                            'Could not load plugin:' + Plugin,
-                            'app.py:51:20')
+                                          'Could not load plugin:' + Plugin,
+                                          'app.py:51:20')
             if init_function != None:  # if we're given init function
                 init_function(self)  # run it
         except Exception as e:
             print('An a fatal exception occured during regestring app main class:' \
-                + str(e))
+                  + str(e))
             if config.debug:
                 traceback.print_exc(file=sys.stdout)
             print('This application has crashed.')
@@ -102,12 +103,12 @@ class App:
         return self.name
 
     def add_component(
-        self,
-        component,
-        name,
-        *args,
-        **kwargs
-        ):
+            self,
+            component,
+            name,
+            *args,
+            **kwargs
+    ):
         _component = components[component](self, name, self, *args, **kwargs)
         self.components.update({name: _component})
         self.components[name].on_create()  # FIXED:Issue #11
@@ -136,7 +137,7 @@ class App:
     def run(self):  # DONE:Add running main function
         config.log.log('Starting app')
 
-          # self.add_component("HelloComponent","Hello1")
+        # self.add_component("HelloComponent","Hello1")
 
         for plugin in self.plugins:
             config.log.log('running plugin:' + plugin)
@@ -148,13 +149,13 @@ class App:
         if self.main_function != None:
             thrd = threading.Thread(target=config.handler.run_function,
                                     args=(self.main_function, self,
-                                    self))  # adding main functiion to threading
+                                          self))  # adding main functiion to threading
             self.threads.append(thrd)
             thrd.setDaemon(1)
         for job in self.custom_functions:
             thrd = threading.Thread(target=config.handler.run_function,
                                     args=(job.function, None, self)
-                                    + job.args)  # adding main functiion to threading
+                                         + job.args)  # adding main functiion to threading
             self.threads.append(thrd)
             thrd.setDaemon(1)
         for i in range(len(self.threads)):
